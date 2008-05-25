@@ -15,14 +15,16 @@ class xorgAuthWidget {
 
 class xorgAuthentifier extends dcUrlHandlers {
   static public function doAuth($args) {
-    @session_start();
     global $core;
     switch ($args) {
      case 'exit':
       $core->auth->killSession();
       break;
      case 'Xorg':
-      $core->auth->callXorg();
+      if ($core->auth->callXorg($_GET['path'])) {
+        header('Location: http://murphy.m4x.org' . $_GET['path']);
+        exit;
+      }
       break;
      case 'XorgReturn':
       $core->auth->returnXorg();
