@@ -49,7 +49,7 @@ class xorgAuth extends dcAuth {
     $url .= "?session=" . session_id();
     $url .= "&challenge=" . $_SESSION["auth-x-challenge"];
     $url .= "&pass=" . md5($_SESSION["auth-x-challenge"] . XORG_AUTH_KEY);
-    $url .= "&url=http://murphy.m4x.org/~x2003bruneau/dotclear/auth/XorgReturn" . urlencode("?path=" . $_GET['path']);
+    $url .= "&url=http://murphy.m4x.org/~x2003bruneau/dotclear/auth/XorgReturn" . urlencode("?path=" . $path);
     session_write_close();
     header("Location: $url");
     exit;
