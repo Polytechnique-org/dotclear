@@ -28,7 +28,7 @@ class xorgAuth extends dcAuth {
 
   public function callXorg() {
     if (@$_SESSION['auth-xorg']) {
-      header("Location: http://murphy.m4x.org/" . $_GET['path']);
+      header("Location: http://murphy.m4x.org" . $_GET['path']);
       return;
     }
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
@@ -58,7 +58,7 @@ class xorgAuth extends dcAuth {
     if (md5('1' . $_SESSION['auth-x-challenge'] . XORG_AUTH_KEY . $params . '1') == $_GET['auth']) {
       unset($_GET['auth']);
       $_SESSION['auth-xorg'] = $_GET['forlife'];
-      header("Location: http://murphy.m4x.org/" . $_GET['path']);
+      header("Location: http://murphy.m4x.org" . $_GET['path']);
       return true;
     }
     $_SESSION['auth-xorg'] = null;
