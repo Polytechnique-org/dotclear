@@ -36,12 +36,13 @@ class xorgAuth extends dcAuth {
     if (@$_SESSION['auth-xorg']) {
       return true;
     }
+    global $core;
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
     $url = "https://www.polytechnique.org/auth-groupex/utf8";
     $url .= "?session=" . session_id();
     $url .= "&challenge=" . $_SESSION["auth-x-challenge"];
     $url .= "&pass=" . md5($_SESSION["auth-x-challenge"] . XORG_AUTH_KEY);
-    $url .= "&url=http://murphy.m4x.org/~x2003bruneau/dotclear/auth/XorgReturn" . urlencode("?path=" . $path);
+    $url .= "&url=" . urlencode($core->blog->url . "auth/XorgReturn?path=" . $path);
     session_write_close();
     header("Location: $url");
     exit;
@@ -111,7 +112,7 @@ class xorgAuth extends dcAuth {
     global $core;
     $core->session->start();
     $core->session->destroy();
-    header('Location: http://murphy.m4x.org/~x2003bruneau/dotclear/');
+    header('Location: ' . $core->blog->url);
     exit;
   }
 

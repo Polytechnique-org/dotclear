@@ -14,7 +14,8 @@ class xorgLoginPage extends dcUrlHandlers {
     # If we have a session cookie, go to index.php
     if (isset($_SESSION['sess_user_id']))
     {
-      header('Location: http://murphy.m4x.org/~x2003bruneau/dotclear/admin/index.php');
+      global $core;
+      header('Location: ' . $core->blog->url . 'admin/index.php');
     }
 
     # Loading locales for detected language
@@ -70,8 +71,8 @@ class xorgLoginPage extends dcUrlHandlers {
     {
       echo
       '<fieldset>'.
-      '<p><a href="http://murphy.m4x.org/~x2003bruneau/dotclear/auth/Xorg?path=/~x2003bruneau/dotclear/admin/index.php">Via Polytechnique.org</a></p>' .
-      '<p><a href="http://murphy.m4x.org/~x2003bruneau/dotclear/admin/auth.php">Via le formulaire</a></p>' .
+      '<p><a href="' . $core->blog->url . 'auth/Xorg?path=/~x2003bruneau/dotclear/admin/index.php">Via Polytechnique.org</a></p>' .
+      '<p><a href="' . $core->blog->url . 'admin/auth.php">Via le formulaire</a></p>' .
       '</fieldset>'.
       
       '<p>'.__('You must accept cookies in order to use the private area.').'</p>';
