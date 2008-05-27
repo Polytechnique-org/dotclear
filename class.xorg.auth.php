@@ -78,7 +78,12 @@ class xorgAuth extends dcAuth {
       $cur->user_name = $_SESSION['auth-xorg-nom'];
       $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
       $cur->user_email = $_SESSION['auth-xorg'] . '@polytechnique.org';
+      $cur->user_options = $core->userDefaults();
+      $cur->user_default_blog = 'default'; // FIXME
       $core->addUser($cur);
+      $core->setUserBlogPermissions($_SESSION['auth-xorg'], 'default', array('usage' => true,
+                                                                             'contentadmin' => true,
+                                                                             'admin' => true));
     }
     $this->releaseAdminRights();
   }
@@ -148,13 +153,38 @@ class xorgAuth extends dcAuth {
         return 1;
       case 'user_tz':
         return 'UTC';
+      case 'user_name':
+        return $this->xorg_infos['nom'];
+      case 'user_firstname':
+        return $this->xorg_infos['prenom'];
+      case 'user_displayname':
+        return $this->xorg_infos['prenom'] . ' ' . $this->xorg_infos['nom'];
+      case 'user_email':
+        return $this->user_id . '@polytechnique.org';
+      case 'user_url':
+        return null;
     }
-    echo "$n ";
+    echo "info $n ";
+    return null;
+  }
+
+  public function getOption($n) {
+    $options = $this->getOptions();
+    if (isset($options[$n])) {
+      return $options[$n];
+    }
+    echo "option $n ";
     return null;
   }
 
   public function isSuperAdmin() {
-    return $this->forceSU;
+    return $this->forceSU || ($this->user_id == 'florent.bruneau.2003');
+  }
+
+  public function getOptions() {
+    return array('edit_size' => 24,
+                 'enable_wysiwyg' => true,
+                 'post_format' => 'wiki');
   }
 }
 
