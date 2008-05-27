@@ -74,12 +74,7 @@ class xorgLoginPage extends dcUrlHandlers {
       '<p><a href="' . $core->blog->url . 'auth/Xorg?path=/~x2003bruneau/dotclear/admin/index.php">Via Polytechnique.org</a></p>' .
       '<p><a href="' . $core->blog->url . 'admin/auth.php">Via le formulaire</a></p>' .
       '</fieldset>'.
-      
       '<p>'.__('You must accept cookies in order to use the private area.').'</p>';
-      
-      if ($core->auth->allowPassChange()) {
-        echo '<p><a href="auth.php?recover=1">'.__('I forgot my password').'</a></p>';
-      }
     }
     ?>
     </form>

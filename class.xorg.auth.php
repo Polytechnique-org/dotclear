@@ -125,6 +125,11 @@ class xorgAuth extends dcAuth {
     return parent::check($permissions, $blog_id);
   }
 
+  public function checkPassword($pwd) {
+    $this->buildFromSession();
+    return !empty($this->user_id);
+  }
+
   public function allowPassChange() {
     return false;
   }
