@@ -24,6 +24,7 @@ class xorgAuth extends dcAuth {
         $this->xorg_infos[$key] = $_SESSION['auth-xorg-' . $key];
       }
       $this->user_id = $_SESSION['auth-xorg'];
+      parent::checkUser($this->user_id);
     }
   }
 
@@ -64,6 +65,7 @@ class xorgAuth extends dcAuth {
       $cur->user_lang = 'fr';
       $cur->user_name = $_SESSION['auth-xorg-nom'];
       $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
+      $cur->user_displayname = $cur->user_firstname . ' ' . $cur->user_name;
       $cur->user_email = $_SESSION['auth-xorg'] . '@polytechnique.org';
       $cur->user_options = $core->userDefaults();
       $cur->user_default_blog = 'default'; // FIXME
@@ -114,10 +116,7 @@ class xorgAuth extends dcAuth {
   }
 
   public function checkUser($user_id, $pwd = null, $user_key = null) {
-    if (!$this->callXorg() || $user_id != $this->user_id) {
-      return false;
-    }
-    return parent::checkUser($this->user_id);
+    return $this->callXorg();
   }
 
   public function check($permissions, $blog_id) {

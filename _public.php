@@ -5,11 +5,12 @@ $core->url->register('xorgLogin', 'XorgLogin', '^admin/(xorg\.php)$', array('xor
 class xorgAuthWidget {
   static public function widget(&$w) {
     global $core;
-    if ($core->auth->xorg_infos['forlife']) {
-      return '<p>Tu es ' . $core->auth->xorg_infos['prenom'] . ' ' . $core->auth->xorg_infos['nom'] . '<br />'
-           . '<a href="auth/exit">déconnexion</a></p>';
+    $name = $core->auth->userID();
+    if ($name) {
+      return '<p>Tu es ' . $core->auth->getInfo('user_displayname') . '<br />'
+           . '<a href="' . $core->blog->url . 'auth/exit">déconnexion</a></p>';
     } else {
-      return '<p><a href="auth/Xorg?path=' . $_SERVER['REQUEST_URI'] . '">M\'authentifier via Polytechnique.org</a></p>';
+      return '<p><a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['REQUEST_URI'] . '">M\'authentifier via Polytechnique.org</a></p>';
     }
   }
 }
