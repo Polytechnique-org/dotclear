@@ -27,19 +27,6 @@ class xorgAuth extends dcAuth {
     }
   }
 
-  public function checkUser($user_id, $pwd = null, $user_key = null) {
-    return $this->callXorg() && $user_id == $this->user_id;
-//    echo "checking auth for " . $user_id;
-//    return parent::checkUser($user_id, $pwd, $user_key);
-  }
-
-  public function check($permissions, $blog_id) {
-    $this->buildFromSession();
-    return true;
-//    echo "Checking right to view $permissions on $blog_id";
-//    return parent::check($permissions, $blog_id);
-  }
-
   public function callXorg($path = null) {
     if (is_null($path)) {
       $path = $_SERVER['REQUEST_URI'];
@@ -126,55 +113,40 @@ class xorgAuth extends dcAuth {
     exit;
   }
 
+  public function checkUser($user_id, $pwd = null, $user_key = null) {
+    if (!$this->callXorg() || $user_id != $this->user_id) {
+      return false;
+    }
+    return parent::checkUser($this->user_id);
+  }
+
+  public function check($permissions, $blog_id) {
+    $this->buildFromSession();
+    return parent::check($permissions, $blog_id);
+  }
+
   public function allowPassChange() {
     return false;
   }
 
   public function userID() {
     $this->buildFromSession();
-    return $this->user_id;
+    return parent::userID();
   }
 
   public function getPermissions() {
-    return array('default' => array('name' => 'My first blog',
-                                    'url'  => 'http://murphy.m4x.org/~x2003bruneau/dotclear/',
-                                    'permissions' => array('usage' => true,
-                                                           'contentadmin' => true,
-                                                           'admin' => true)));
+    $this->buildFromSession();
+    return parent::getPermissions();
   }
 
   public function getInfo($n) {
-    switch ($n) {
-      case 'user_lang':
-        return "fr";
-      case 'user_default_blog':
-        return 'default';
-      case 'user_post_status':
-        return 1;
-      case 'user_tz':
-        return 'UTC';
-      case 'user_name':
-        return $this->xorg_infos['nom'];
-      case 'user_firstname':
-        return $this->xorg_infos['prenom'];
-      case 'user_displayname':
-        return $this->xorg_infos['prenom'] . ' ' . $this->xorg_infos['nom'];
-      case 'user_email':
-        return $this->user_id . '@polytechnique.org';
-      case 'user_url':
-        return null;
-    }
-    echo "info $n ";
-    return null;
+    $this->buildFromSession();
+    return parent::getInfo($n);
   }
 
   public function getOption($n) {
-    $options = $this->getOptions();
-    if (isset($options[$n])) {
-      return $options[$n];
-    }
-    echo "option $n ";
-    return null;
+    $this->buildFromSession();
+    return parent::getOption($n);
   }
 
   public function isSuperAdmin() {
@@ -182,9 +154,8 @@ class xorgAuth extends dcAuth {
   }
 
   public function getOptions() {
-    return array('edit_size' => 24,
-                 'enable_wysiwyg' => true,
-                 'post_format' => 'wiki');
+    $this->buildFromSession();
+    return parent::getOptions();
   }
 }
 
