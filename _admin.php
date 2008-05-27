@@ -1,10 +1,5 @@
 <?php
-$core->addBehavior('initWidgets', array('xorgAuthWidgetBehavior', 'initWidget'));
+require_once dirname(__FILE__) . '/widget.auth.php';
 
-class xorgAuthWidgetBehavior {
-  public static function initWidget(&$w) {
-    $w->create('XorgAuth', __('Auth. X.org'), array('xorgAuthWidget','widget'));
-  }
-}
-
+$core->addBehavior('initWidgets', array('xorgAuthWidget', 'behavior_initWidgets'));
 ?>
