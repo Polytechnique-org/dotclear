@@ -15,15 +15,17 @@ class xorgAuth extends dcAuth {
 
   private function buildFromSession() {
     global $core;
+    @header('Last-Modified:');
     if (!isset($core) || !isset($core->session)) {
       return;
     }
     $core->session->start();
-    if (@$_SESSION['auth-xorg'] && is_null($this->xorg_infos['forlife'])) {
+    $user = @$_SESSION['auth-xorg'];
+    if ($user && is_null($this->xorg_infos['forlife'])) {
       foreach ($this->xorg_infos as $key => $val) {
         $this->xorg_infos[$key] = $_SESSION['auth-xorg-' . $key];
       }
-      $this->user_id = $_SESSION['auth-xorg'];
+      $this->user_id = $user;
       parent::checkUser($this->user_id);
     }
   }
@@ -37,6 +39,13 @@ class xorgAuth extends dcAuth {
       return true;
     }
     global $core;
+
+    if (!$this->sessionExists()) {
+      session_write_close();
+      header("Location: " . $core->blog->url . 'auth/Xorg?path=' . $path);
+      exit;
+    }
+
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
     $url = "https://www.polytechnique.org/auth-groupex/utf8";
     $url .= "?session=" . session_id();
@@ -84,6 +93,8 @@ class xorgAuth extends dcAuth {
     }
     $params = '';
     global $core;
+    $_COOKIE[DC_SESSION_NAME] = $_GET['PHPSESSID'];
+    unset($_GET['PHPSESSID']);
     $core->session->start();
     foreach($this->xorg_infos as $key => $val) {
       if(!isset($_GET[$key])) {
@@ -98,6 +109,7 @@ class xorgAuth extends dcAuth {
 		  $_SESSION['sess_browser_uid'] = http::browserUID(DC_MASTER_KEY);
       $_SESSION['sess_blog_id'] = 'default';
       $this->createUser();
+      $path = $_GET['path'];
       header("Location: http://murphy.m4x.org" . $_GET['path']);
       exit;
     }
@@ -161,6 +173,16 @@ class xorgAuth extends dcAuth {
   public function getOptions() {
     $this->buildFromSession();
     return parent::getOptions();
+  }
+
+  public function authForm() {
+    global $core;
+    $path = "http://murphy.m4x.org/~x2003bruneau/dotclear/";
+    return '<fieldset>'.
+      '<p><a href="' . $path . 'auth/Xorg?path=/~x2003bruneau/dotclear/admin/index.php">Via Polytechnique.org</a></p>' .
+      '<p><a href="' . $path . 'admin/auth.php">Via le formulaire</a></p>' .
+      '</fieldset>'.
+      '<p>'.__('You must accept cookies in order to use the private area.').'</p>';
   }
 }
 
