@@ -7,12 +7,12 @@ class xorgAuthWidget {
   static public function widget(&$w) {
     global $core;
     $name = $core->auth->userID();
-    var_dump($_SESSION);
-    var_dump($_REQUEST);
-    echo "sessionid = " . session_id();
     if ($name) {
-      return '<p>Tu es ' . $core->auth->getInfo('user_displayname') . '<br />'
-           . '<a href="' . $core->blog->url . 'auth/exit">déconnexion</a></p>';
+      $str = '<p>Tu es ' . $core->auth->getInfo('user_displayname') . '<br />';
+      if ($core->auth->check('usage,contentadmin,admin', $core->blog->id)) {
+        $str .= '<a href="' . $core->blog->url . 'admin/index.php">Interface de rédaction</a><br />';
+      }
+      return $str . '<a href="' . $core->blog->url . 'auth/exit">Déconnexion</a></p>';
     } else {
       return '<p><a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['REQUEST_URI'] . '">M\'authentifier via Polytechnique.org</a></p>';
     }
