@@ -79,5 +79,65 @@ class xorgPostPermsWidget {
     $opts['post_xorg_perms'] = $_POST['post_xorg_perms'];
     $cur->setField('user_options', $opts);
   }
+
+  public static function behavior_coreBlogGetPosts(&$rs) {
+    $rs->extend('xorgPostPermsFilter');
+  }
+
+/*  public static function behavior_coreBlogGetComments(&$rs) {
+    $rs->extends('xorgCommentPermsFilter');
+  }*/
+}
+
+if (class_exists('rsExtPostPublic')) {
+
+class xorgPostPermsFilter extends rsExtPostPublic {
+  private static function canRead(&$rs) {
+    $metas = unserialize($rs->field('post_meta'));
+    global $core;
+    if (!isset($metas['post_xorg_perms'])) {
+      return true;
+    } elseif ($metas['post_xorg_perms'] == 'public') {
+      return true;
+    } elseif ($metas['post_xorg_perms'] == 'auth' && $core->auth->userID()) {
+      return true;
+    } elseif ($metas['post_xorg_perms'] == 'group' && $core->auth->getInfo('xorg_group_member')) {
+      return true;
+    }
+    return false;
+  }
+
+  public static function getContent(&$rs, $absolute_urls = false) {
+    if (self::canRead($rs)) {
+      return parent::getContent(&$rs, $absolute_urls);
+    } else if (!self::isExtended($rs)) {
+      return '<p class="error">Vous n\'avez pas les droits suffisant pour lire ce billet</p>';
+    } else {
+      return null;
+    }
+  }
+
+  public static function getExcerpt(&$rs, $absolute_urls = false) {
+    if (self::canRead($rs)) {
+      return parent::getContent(&$rs, $absolute_urls);
+    } else if (self::isExtended($rs)) {
+      return 'Vous n\'avez pas les droits suffisant pour lire ce billet';
+    } else {
+      return null;
+    }
+  }
+
+  public static function commentsActive(&$rs) {
+    return self::canRead($rs) && parent::commentsActive($rs);
+  }
+
+  public static function trackbacksActive(&$rs) {
+    return self::canRead($rs) && parent::trackbacksActive($rs);
+  }
+
+  public static function hasComments(&$rs) {
+    return self::canRead($rs) && parent::hasComments($rs);
+  }
+}
 }
 ?>
