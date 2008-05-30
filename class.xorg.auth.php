@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../inc/core/class.dc.auth.php';
-
 class xorgAuth extends dcAuth {
   private $forceSU = false;
 
