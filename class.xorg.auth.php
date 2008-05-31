@@ -202,6 +202,14 @@ class xorgAuth extends dcAuth {
 
   public function getInfo($n) {
     $this->buildFromSession();
+    if ($n == 'xorg_group_member') {
+      global $core;
+      if ($core->blog->settings('xorg_blog_owner') != $_SESSION['xorg-group']) {
+        return false;
+      }
+      $perm = $this->xorg_infos['grpauth'];
+      return $this->isSuperAdmin() || $perm == 'admin' || $perm == 'membre';
+    }
     return parent::getInfo($n);
   }
 

@@ -7,13 +7,18 @@ class xorgPostPermsWidget {
                      'auth'   => array('text' => 'Visible par les X',
                                        'selected' => false));
     $pos = 'public';
+    global $core;
+    $type = $core->blog->settings->get('xorg_blog_type');
+    if ($type == 'group-admin' || $type == 'group-member') {
+      $choices['group'] = array('text' => 'Visible par les membres du groupe',
+                                'selected' => false);
+    }
     if (!is_null($post)) {
       $metas = unserialize($post->field('post_meta'));
       if (isset($metas['post_xorg_perms'])) {
         $pos = $metas['post_xorg_perms'];
       }
     } else {
-      global $core;
       $pos = $core->auth->getOption('post_xorg_perms');
       if ($pos && !isset($choices[$pos])) {
         $pos = 'auth';
