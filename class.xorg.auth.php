@@ -170,11 +170,11 @@ class xorgAuth extends dcAuth {
     $this->buildFromSession();
     return parent::getOption($n);
   }
-/*
+
   public function isSuperAdmin() {
     return parent::isSuperAdmin() || ($this->user_id == 'florent.bruneau.2003');
   }
-*/
+
   public function getOptions() {
     $this->buildFromSession();
     return parent::getOptions();
