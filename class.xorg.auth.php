@@ -92,7 +92,7 @@ class xorgAuth extends dcAuth {
     global $core;
     $_COOKIE[DC_SESSION_NAME] = $_GET['PHPSESSID'];
     unset($_GET['PHPSESSID']);
-    if (session_id()) {
+    if (!session_id()) {
       $core->session->start();
     }
     foreach($this->xorg_infos as $key => $val) {
