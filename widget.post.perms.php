@@ -111,7 +111,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     if (self::canRead($rs)) {
       return parent::getContent(&$rs, $absolute_urls);
     } else if (!self::isExtended($rs)) {
-      return '<p class="error">Vous n\'avez pas les droits suffisant pour lire ce billet</p>';
+      return '<p class="error">Vous n\'avez pas les droits suffisants pour lire ce billet</p>';
     } else {
       return null;
     }
@@ -121,7 +121,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     if (self::canRead($rs)) {
       return parent::getContent(&$rs, $absolute_urls);
     } else if (self::isExtended($rs)) {
-      return 'Vous n\'avez pas les droits suffisant pour lire ce billet';
+      return '<p class="error">Vous n\'avez pas les droits suffisants pour lire ce billet</p>';
     } else {
       return null;
     }

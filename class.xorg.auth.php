@@ -1,8 +1,6 @@
 <?php
 
 class xorgAuth extends dcAuth {
-  private $forceSU = false;
-
   public $xorg_infos = array('forlife' => null,
                              'prenom' => null,
                              'nom' => null);
@@ -11,7 +9,7 @@ class xorgAuth extends dcAuth {
     parent::__construct($core);
   }
 
-  private function buildFromSession() {
+  public function buildFromSession() {
     global $core;
     @header('Last-Modified:');
     if (!isset($core) || !isset($core->session)) {
@@ -25,8 +23,41 @@ class xorgAuth extends dcAuth {
       }
       $this->user_id = $user;
       parent::checkUser($this->user_id);
+      if (isset($core->blog)) {
+        $this->sudo(array($this, 'updateUserPerms'));
+      }
     }
   }
+
+  public function createUser() {
+    global $core;
+    if (!$core->userExists($_SESSION['auth-xorg'])) {
+      $cur = new cursor($this->con, 'dc_user');
+      $cur->user_id = $_SESSION['auth-xorg'];
+      $cur->user_pwd = md5(rand());
+      $cur->user_lang = 'fr';
+      $cur->user_name = $_SESSION['auth-xorg-nom'];
+      $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
+      $cur->user_displayname = $cur->user_firstname . ' ' . $cur->user_name;
+      $cur->user_email = $_SESSION['auth-xorg'] . '@polytechnique.org';
+      $cur->user_options = $core->userDefaults();
+      $cur->user_options['post_xorg_perms'] = 'public';
+      $cur->user_default_blog = 'default'; // FIXME
+      $core->addUser($cur);
+    }
+  }
+
+  private function updateUserPerms() {
+    global $core;
+    $core->setUserBlogPermissions($_SESSION['auth-xorg'],
+                                  $core->blog->id,
+                                  array('usage' => true,
+                                        'contentadmin' => true,
+                                        'admin' => true));
+  }
+
+
+  /** Xorg SSO API */
 
   public function callXorg($path = null) {
     if (is_null($path)) {
@@ -55,36 +86,6 @@ class xorgAuth extends dcAuth {
     exit;
   }
 
-  private function acquireAdminRights() {
-    $this->forceSU = true;
-  }
-
-  private function releaseAdminRights() {
-    $this->forceSU = false;
-  }
-
-  private function createUser() {
-    global $core;
-    $this->acquireAdminRights();
-    if (!$core->userExists($_SESSION['auth-xorg'])) {
-      $cur = new cursor($this->con, 'dc_user');
-      $cur->user_id = $_SESSION['auth-xorg'];
-      $cur->user_pwd = md5(rand());
-      $cur->user_lang = 'fr';
-      $cur->user_name = $_SESSION['auth-xorg-nom'];
-      $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
-      $cur->user_displayname = $cur->user_firstname . ' ' . $cur->user_name;
-      $cur->user_email = $_SESSION['auth-xorg'] . '@polytechnique.org';
-      $cur->user_options = $core->userDefaults();
-      $cur->user_default_blog = 'default'; // FIXME
-      $core->addUser($cur);
-      $core->setUserBlogPermissions($_SESSION['auth-xorg'], 'default', array('usage' => true,
-                                                                             'contentadmin' => true,
-                                                                             'admin' => true));
-    }
-    $this->releaseAdminRights();
-  }
-
   public function returnXorg() {
     if (!isset($_GET['auth'])) {
       return false;
@@ -106,7 +107,7 @@ class xorgAuth extends dcAuth {
       $_SESSION['sess_user_id'] = $_SESSION['auth-xorg'] = $_GET['forlife'];
 		  $_SESSION['sess_browser_uid'] = http::browserUID(DC_MASTER_KEY);
       $_SESSION['sess_blog_id'] = 'default';
-      $this->createUser();
+      $this->sudo(array($this, 'createUser'));
       $path = $_GET['path'];
       header("Location: http://murphy.m4x.org" . $_GET['path']);
       exit;
@@ -125,6 +126,9 @@ class xorgAuth extends dcAuth {
     header('Location: ' . $core->blog->url);
     exit;
   }
+
+
+  /** Dotclear dcAuth API */
 
   public function checkUser($user_id, $pwd = null, $user_key = null) {
     return $this->callXorg();
@@ -165,7 +169,7 @@ class xorgAuth extends dcAuth {
   }
 
   public function isSuperAdmin() {
-    return $this->forceSU || ($this->user_id == 'florent.bruneau.2003');
+    return parent::isSuperAdmin() || ($this->user_id == 'florent.bruneau.2003');
   }
 
   public function getOptions() {
