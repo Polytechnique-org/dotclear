@@ -90,8 +90,10 @@ class xorgAuth extends dcAuth {
       $perms = array('usage' => true,
                      'contentadmin' => true,
                      'admin' => true);
-    } else {
+    } else if ($type != 'user') {
       $perms = array();
+    } else {
+      return;
     }
     $core->setUserBlogPermissions($_SESSION['auth-xorg'],
                                   $blog->id,
