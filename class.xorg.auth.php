@@ -3,10 +3,18 @@
 class xorgAuth extends dcAuth {
   public $xorg_infos = array('forlife' => null,
                              'prenom' => null,
-                             'nom' => null);
+                             'nom' => null,
+                             'grpauth' => null,
+                             'perms' => null);
+  static public function behavior_coreBlogConstruct(&$blog) {
+    global $core;
+    $core->auth->sudo(array($core->auth, 'updateUserPerms'), $blog);
+  }
+
 
   public function __construct(&$core) {
     parent::__construct($core);
+    $core->addBehavior('coreBlogConstruct', array('xorgAuth', 'behavior_coreBlogConstruct'));
   }
 
   public function buildFromSession() {
@@ -25,9 +33,6 @@ class xorgAuth extends dcAuth {
       }
       $this->user_id = $user;
       parent::checkUser($this->user_id);
-      if (isset($core->blog)) {
-        $this->sudo(array($this, 'updateUserPerms'));
-      }
       $core->getUserBlogs();
     }
   }
@@ -50,13 +55,40 @@ class xorgAuth extends dcAuth {
     }
   }
 
-  private function updateUserPerms() {
+  public function updateUserPerms(&$blog) {
     global $core;
+    $this->buildFromSession();
+    if (!isset($_SESSION['auth-xorg'])) {
+      return;
+    }
+    $type = $blog->settings->get('xorg_blog_type');
+    $owner = $blog->settings->get('xorg_blog_owner');
+    $level = $this->xorg_infos['grpauth'];
+    if (($type == 'group-admin' || $type == 'group-member') && $level == 'admin') {
+      if ($owner != $_SESSION['xorg-group']) {
+        return;
+      }
+      $perms = array('usage' => true,
+                     'contentadmin' => true,
+                     'admin' => true);
+    } else if ($type == 'group-member' && $level == 'membre') {
+      if ($owner != $_SESSION['xorg-group']) {
+        return;
+      }
+      $perms = array('usage' => true);
+    } else if ($type == 'user' && $owner == $this->xorg_infos['forlife']) {
+      $perms = array('usage' => true,
+                     'contentadmin' => true,
+                     'admin' => true);
+    } else {
+      $perms = array();
+    }
+/*    echo $level;
+    echo "Setting perms : " . $_SESSION['auth-xorg'] . ' ' . $blog->id . '<br/>';
+    var_dump($perms);*/
     $core->setUserBlogPermissions($_SESSION['auth-xorg'],
-                                  $core->blog->id,
-                                  array('usage' => true,
-                                        'contentadmin' => true,
-                                        'admin' => true));
+                                  $blog->id,
+                                  $perms);
   }
 
 
@@ -79,6 +111,13 @@ class xorgAuth extends dcAuth {
     $url .= "?session=" . session_id();
     $url .= "&challenge=" . $_SESSION["auth-x-challenge"];
     $url .= "&pass=" . md5($_SESSION["auth-x-challenge"] . XORG_AUTH_KEY);
+    $type = $core->blog->settings->get('xorg_blog_type');
+    if ($type == 'group-member' || $type == 'group-admin') {
+      $_SESSION['xorg-group'] = $core->blog->settings->get('xorg_blog_owner');
+      $url .= '&group=' . $core->blog->settings->get('xorg_blog_owner');
+    } else {
+      unset($_SESSION['xorg-group']);
+    }
     $url .= "&url=" . urlencode($core->blog->url . "auth/XorgReturn?path=" . $path);
     session_write_close();
     header("Location: $url");
@@ -139,7 +178,7 @@ class xorgAuth extends dcAuth {
 
   public function check($permissions, $blog_id) {
     $this->buildFromSession();
-    return parent::check($permissions, $blog_id);
+    return $this->isSuperAdmin() || parent::check($permissions, $blog_id);
   }
 
   public function checkPassword($pwd) {
@@ -172,7 +211,8 @@ class xorgAuth extends dcAuth {
   }
 
   public function isSuperAdmin() {
-    return parent::isSuperAdmin() || ($this->user_id == 'florent.bruneau.2003');
+//    var_dump($this->xorg_infos);
+    return parent::isSuperAdmin() || $this->xorg_infos['perms'] == 'admin';
   }
 
   public function getOptions() {
