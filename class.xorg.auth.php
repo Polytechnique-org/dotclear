@@ -28,6 +28,7 @@ class xorgAuth extends dcAuth {
       if (isset($core->blog)) {
         $this->sudo(array($this, 'updateUserPerms'));
       }
+      $core->getUserBlogs();
     }
   }
 
@@ -184,7 +185,6 @@ class xorgAuth extends dcAuth {
     $path = "http://murphy.m4x.org/~x2003bruneau/dotclear/";
     return '<fieldset>'.
       '<p><a href="' . $path . 'auth/Xorg?path=/~x2003bruneau/dotclear/admin/index.php">Via Polytechnique.org</a></p>' .
-      '<p><a href="' . $path . 'admin/auth.php">Via le formulaire</a></p>' .
       '</fieldset>'.
       '<p>'.__('You must accept cookies in order to use the private area.').'</p>';
   }

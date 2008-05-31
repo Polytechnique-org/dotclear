@@ -107,11 +107,24 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     return false;
   }
 
+  private static function showMessage(&$rs) {
+    $metas = unserialize($rs->field('post_meta'));
+    global $core;
+    $str = '<p class="error">'
+         . 'Vous n\'avez pas les droits suffisants pour lire ce billet<br />';
+    if (!$core->auth->userID()) {
+      $str .= 'Vous devez vous <a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['REQUEST_URI'] .'">authentifier</a>';
+    } else {
+      $str .= 'Tu dois être membre du groupe pour lire ce message';
+    }
+    return $str . '</p>';
+  }
+
   public static function getContent(&$rs, $absolute_urls = false) {
     if (self::canRead($rs)) {
       return parent::getContent(&$rs, $absolute_urls);
     } else if (!self::isExtended($rs)) {
-      return '<p class="error">Vous n\'avez pas les droits suffisants pour lire ce billet</p>';
+      return self::showMessage($rs);
     } else {
       return null;
     }
@@ -121,7 +134,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     if (self::canRead($rs)) {
       return parent::getContent(&$rs, $absolute_urls);
     } else if (self::isExtended($rs)) {
-      return '<p class="error">Vous n\'avez pas les droits suffisants pour lire ce billet</p>';
+      return self::showMessage($rs);
     } else {
       return null;
     }
