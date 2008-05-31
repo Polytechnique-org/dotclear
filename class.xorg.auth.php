@@ -32,6 +32,7 @@ class xorgAuth extends dcAuth {
         $this->xorg_infos[$key] = $_SESSION['auth-xorg-' . $key];
       }
       $this->user_id = $user;
+      $this->user_admin = ($_SESSION['auth-xorg-perms'] == 'admin');
       parent::checkUser($this->user_id);
       $core->getUserBlogs();
     }
@@ -43,6 +44,7 @@ class xorgAuth extends dcAuth {
       $cur = new cursor($this->con, 'dc_user');
       $cur->user_id = $_SESSION['auth-xorg'];
       $cur->user_pwd = md5(rand());
+      $cur->user_super = ($_SESSION['auth-xorg-perms'] == 'admin');
       $cur->user_lang = 'fr';
       $cur->user_name = $_SESSION['auth-xorg-nom'];
       $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
@@ -64,6 +66,14 @@ class xorgAuth extends dcAuth {
     $type = $blog->settings->get('xorg_blog_type');
     $owner = $blog->settings->get('xorg_blog_owner');
     $level = $this->xorg_infos['grpauth'];
+    $rec = $core->getUser($this->userID());
+    $wasAdmin = $rec->f('user_super');
+    $isAdmin = $this->xorg_infos['perms'] == 'admin';
+    if (($wasAdmin && !$isAdmin) || (!$wasAdmin && $isAdmin)) {
+      $cur = new cursor($this->con, 'dc_user');
+      $cur->user_super = $isAdmin ? '1' : '0';
+      $core->updUser($this->userID(), $cur);
+    }
     if (($type == 'group-admin' || $type == 'group-member') && $level == 'admin') {
       if ($owner != $_SESSION['xorg-group']) {
         return;
@@ -83,9 +93,6 @@ class xorgAuth extends dcAuth {
     } else {
       $perms = array();
     }
-/*    echo $level;
-    echo "Setting perms : " . $_SESSION['auth-xorg'] . ' ' . $blog->id . '<br/>';
-    var_dump($perms);*/
     $core->setUserBlogPermissions($_SESSION['auth-xorg'],
                                   $blog->id,
                                   $perms);
@@ -178,7 +185,7 @@ class xorgAuth extends dcAuth {
 
   public function check($permissions, $blog_id) {
     $this->buildFromSession();
-    return $this->isSuperAdmin() || parent::check($permissions, $blog_id);
+    return parent::check($permissions, $blog_id);
   }
 
   public function checkPassword($pwd) {
@@ -216,11 +223,6 @@ class xorgAuth extends dcAuth {
   public function getOption($n) {
     $this->buildFromSession();
     return parent::getOption($n);
-  }
-
-  public function isSuperAdmin() {
-//    var_dump($this->xorg_infos);
-    return parent::isSuperAdmin() || $this->xorg_infos['perms'] == 'admin';
   }
 
   public function getOptions() {
