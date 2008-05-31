@@ -15,7 +15,9 @@ class xorgAuth extends dcAuth {
     if (!isset($core) || !isset($core->session)) {
       return;
     }
-    $core->session->start();
+    if (!session_id()) {
+      $core->session->start();
+    }
     $user = @$_SESSION['auth-xorg'];
     if ($user && is_null($this->xorg_infos['forlife'])) {
       foreach ($this->xorg_infos as $key => $val) {
@@ -68,13 +70,9 @@ class xorgAuth extends dcAuth {
       return true;
     }
     global $core;
-
-    if (!$this->sessionExists()) {
-      session_write_close();
-      header("Location: " . $core->blog->url . 'auth/Xorg?path=' . $path);
-      exit;
+    if (!session_id()) {
+      $core->session->start();
     }
-
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
     $url = "https://www.polytechnique.org/auth-groupex/utf8";
     $url .= "?session=" . session_id();
@@ -94,7 +92,9 @@ class xorgAuth extends dcAuth {
     global $core;
     $_COOKIE[DC_SESSION_NAME] = $_GET['PHPSESSID'];
     unset($_GET['PHPSESSID']);
-    $core->session->start();
+    if (session_id()) {
+      $core->session->start();
+    }
     foreach($this->xorg_infos as $key => $val) {
       if(!isset($_GET[$key])) {
         return false;
@@ -121,7 +121,9 @@ class xorgAuth extends dcAuth {
 
   public function killSession() {
     global $core;
-    $core->session->start();
+    if (!session_id()) {
+      $core->session->start();
+    }
     $core->session->destroy();
     header('Location: ' . $core->blog->url);
     exit;
@@ -167,11 +169,11 @@ class xorgAuth extends dcAuth {
     $this->buildFromSession();
     return parent::getOption($n);
   }
-
+/*
   public function isSuperAdmin() {
     return parent::isSuperAdmin() || ($this->user_id == 'florent.bruneau.2003');
   }
-
+*/
   public function getOptions() {
     $this->buildFromSession();
     return parent::getOptions();
