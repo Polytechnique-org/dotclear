@@ -54,8 +54,9 @@ class xorgAuth extends dcAuth {
       $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
       $cur->user_displayname = $cur->user_firstname . ' ' . $cur->user_name;
       $cur->user_email = $_SESSION['auth-xorg'] . '@polytechnique.org';
-      $cur->user_options = $core->userDefaults();
-      $cur->user_options['post_xorg_perms'] = 'public';
+      $defaults = $core->userDefaults();
+      $defaults['post_xorg_perms'] = 'public';
+      $cur->user_options = $defaults;
       $cur->user_default_blog = $_SERVER['DC_BLOG_ID'];
       $core->addUser($cur);
     }
