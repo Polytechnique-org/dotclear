@@ -1,4 +1,6 @@
 <?php
+define('IS_ADMIN_PAGE', 1);
+
 require_once dirname(__FILE__) . '/widget.auth.php';
 require_once dirname(__FILE__) . '/widget.post.perms.php';
 require_once dirname(__FILE__) . '/widget.blog.owner.php';

@@ -6,7 +6,7 @@ class xorgAuthWidget {
 
   static public function widget(&$w) {
     global $core;
-    $name = $core->auth->userID();
+    $name = @$core->auth->getInfo('user_displayname');
     if ($name) {
       $str = '<p>Tu es ' . $core->auth->getInfo('user_displayname') . '<br />';
       if ($core->auth->check('usage,contentadmin,admin', $core->blog->id)) {

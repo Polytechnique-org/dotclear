@@ -48,7 +48,7 @@ class xorgAuth extends dcAuth {
       $cur = new cursor($this->con, 'dc_user');
       $cur->user_id = $_SESSION['auth-xorg'];
       $cur->user_pwd = md5(rand());
-      $cur->user_super = ($_SESSION['auth-xorg-perms'] == 'admin');
+      $cur->user_super = ($_SESSION['auth-xorg-perms'] == 'admin') ? '1' : '0';
       $cur->user_lang = 'fr';
       $cur->user_name = $_SESSION['auth-xorg-nom'];
       $cur->user_firstname = $_SESSION['auth-xorg-prenom'];
@@ -96,7 +96,6 @@ class xorgAuth extends dcAuth {
     } else if ($type != 'user') {
       $perms = array();
     } else {
-        echo "bad session";
       return;
     }
     $core->setUserBlogPermissions($_SESSION['auth-xorg'],
@@ -213,6 +212,9 @@ class xorgAuth extends dcAuth {
 
   public function userID() {
     $this->buildFromSession();
+    if (!defined('IS_ADMIN_PAGE')) {
+      return null;
+    }
     return parent::userID();
   }
 
