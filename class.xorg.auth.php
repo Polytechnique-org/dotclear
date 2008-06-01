@@ -212,7 +212,7 @@ class xorgAuth extends dcAuth {
 
   public function userID() {
     $this->buildFromSession();
-    $isadmin = preg_match('@/admin/[^/]\.php$@i', $_SERVER['SCRIPT_FILENAME']);
+    $isadmin = preg_match('@/admin/[^/]+\.php$@i', $_SERVER['SCRIPT_FILENAME']);
     if (!$isadmin) {
       return null;
     }
