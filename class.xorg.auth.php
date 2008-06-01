@@ -74,17 +74,15 @@ class xorgAuth extends dcAuth {
       $cur->user_super = $isAdmin ? '1' : '0';
       $core->updUser($this->userID(), $cur);
     }
+    if ($_SESSION['xorg-group'] != $owner) {
+      $this->killSession();
+      return;
+    }
     if (($type == 'group-admin' || $type == 'group-member') && $level == 'admin') {
-      if ($owner != $_SESSION['xorg-group']) {
-        return;
-      }
       $perms = array('usage' => true,
                      'contentadmin' => true,
                      'admin' => true);
     } else if ($type == 'group-member' && $level == 'membre') {
-      if ($owner != $_SESSION['xorg-group']) {
-        return;
-      }
       $perms = array('usage' => true);
     } else if ($type == 'user' && $owner == $this->xorg_infos['forlife']) {
       $perms = array('usage' => true,
@@ -93,6 +91,7 @@ class xorgAuth extends dcAuth {
     } else if ($type != 'user') {
       $perms = array();
     } else {
+        echo "bad session";
       return;
     }
     $core->setUserBlogPermissions($_SESSION['auth-xorg'],
@@ -116,16 +115,14 @@ class xorgAuth extends dcAuth {
       $core->session->start();
     }
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
+    $_SESSION['xorg-group'] = $core->blog->settings->get('xorg_blog_owner');
     $url = "https://www.polytechnique.org/auth-groupex/utf8";
     $url .= "?session=" . session_id();
     $url .= "&challenge=" . $_SESSION["auth-x-challenge"];
     $url .= "&pass=" . md5($_SESSION["auth-x-challenge"] . XORG_AUTH_KEY);
     $type = $core->blog->settings->get('xorg_blog_type');
     if ($type == 'group-member' || $type == 'group-admin') {
-      $_SESSION['xorg-group'] = $core->blog->settings->get('xorg_blog_owner');
       $url .= '&group=' . $core->blog->settings->get('xorg_blog_owner');
-    } else {
-      unset($_SESSION['xorg-group']);
     }
     $url .= "&url=" . urlencode($core->blog->url . "auth/XorgReturn?path=" . $path);
     session_write_close();
@@ -174,7 +171,17 @@ class xorgAuth extends dcAuth {
       $core->session->start();
     }
     $core->session->destroy();
-    header('Location: ' . $core->blog->url);
+    if (!isset($core->blog)) {
+      $blog = $core->getBlog(DC_BLOG_ID);
+    } else {
+      $blog = $core->blog;
+    }
+    $url = @$blog->url;
+    if (!$url) {
+      $url = $blog->f('blog_url');
+    }
+
+    header('Location: ' . $url);
     exit;
   }
 
