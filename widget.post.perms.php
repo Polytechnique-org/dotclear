@@ -25,14 +25,21 @@ class xorgPostPermsWidget {
       }
     }
     $choices[$pos]['selected'] = true;
-    echo '<p><label>Visibilité du billet&nbsp;:'
-         . '  <select name="post_xorg_perms">';
+    ?>
+    <p>
+      <label>
+        Visibilité du billet&nbsp;:
+        <select name="post_xorg_perms">
+    <?php
     foreach ($choices as $val => $fields) {
       echo '<option value="' . $val . '"' . ($fields['selected'] ? ' selected="selected"' : '') . '>'
          . $fields['text'] . '</option>';
     }
-    echo '  </select>'
-       . '</label></p>';
+    ?>
+        </select>
+      </label>
+    </p>
+    <?php
   }
 
   private static function setPermsMeta(&$cur) {
@@ -68,15 +75,22 @@ class xorgPostPermsWidget {
       $pos = 'public';
     }
     $levels[$pos]['selected'] = true;
-    echo '<p><label>Visibilité nouveaux billets par défaut&nbsp;:'
-       . '  <select name="post_xorg_perms">';
+    ?>
+    <p>
+      <label>
+        Visibilité nouveaux billets par défaut&nbsp;:
+        <select name="post_xorg_perms">
+    <?php
     foreach ($levels as $key => $fields) {
       echo '<option value="' . $key . '"' . ($fields['selected'] ? ' selected="selected"' : '') . '>'
          . $fields['text'] . '</option>';
     }
-    echo '</select>'
-       . '(1) Ne concerne que les blogs de groupes X. Equivaut à "Visible par les X" sur les autres blogs"'
-       . '</label></p>';
+    ?>
+        </select>
+        (1) Ne concerne que les blogs de groupes X. Equivaut à "Visible par les X" sur les autres blogs"
+      </label>
+    </p>
+    <?php
   }
 
   public static function behavior_adminBeforeUserUpdate(&$cur, $user_id) {
