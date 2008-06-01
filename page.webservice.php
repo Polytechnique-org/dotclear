@@ -3,7 +3,13 @@ require_once dirname(__FILE__) . '/widget.blog.owner.php';
 
 class XorgWebservice extends dcUrlHandlers {
   static private function canRunServices() {
-    return true;
+    $addrs = explode(',', XORG_SERV_ADDRS);
+    foreach ($addrs as $addr) {
+      if ($addr == $_SERVER['REMOTE_ADDR']) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static public function handle($args) {
