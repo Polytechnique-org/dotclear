@@ -71,13 +71,13 @@ class xorgAuth extends dcAuth {
     $type = $blog->settings->get('xorg_blog_type');
     $owner = $blog->settings->get('xorg_blog_owner');
     $level = $this->xorg_infos['grpauth'];
-    $rec = $core->getUser($this->userID());
+    $rec = $core->getUser($this->user_id);
     $wasAdmin = $rec->f('user_super');
     $isAdmin = $this->xorg_infos['perms'] == 'admin';
     if (($wasAdmin && !$isAdmin) || (!$wasAdmin && $isAdmin)) {
       $cur = new cursor($this->con, 'dc_user');
       $cur->user_super = $isAdmin ? '1' : '0';
-      $core->updUser($this->userID(), $cur);
+      $core->updUser($this->user_id, $cur);
     }
     if ($_SESSION['xorg-group'] != $owner) {
       $this->killSession();
@@ -212,7 +212,7 @@ class xorgAuth extends dcAuth {
 
   public function userID() {
     $this->buildFromSession();
-    if (!defined('IS_ADMIN_PAGE')) {
+    if (defined('IS_PUBLIC_PAGE')) {
       return null;
     }
     return parent::userID();
