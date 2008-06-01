@@ -11,7 +11,6 @@ class xorgAuth extends dcAuth {
     $core->auth->sudo(array($core->auth, 'updateUserPerms'), $blog);
   }
 
-
   public function __construct(&$core) {
     parent::__construct($core);
     $core->addBehavior('coreBlogConstruct', array('xorgAuth', 'behavior_coreBlogConstruct'));
@@ -26,6 +25,7 @@ class xorgAuth extends dcAuth {
     if (!session_id()) {
       $core->session->start();
     }
+    $_SESSION['sess_blog_id'] = $_SERVER['DC_BLOG_ID'];
     $user = @$_SESSION['auth-xorg'];
     if ($user && is_null($this->xorg_infos['forlife'])) {
       foreach ($this->xorg_infos as $key => $val) {
