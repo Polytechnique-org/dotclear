@@ -212,7 +212,8 @@ class xorgAuth extends dcAuth {
 
   public function userID() {
     $this->buildFromSession();
-    if (defined('IS_PUBLIC_PAGE')) {
+    $isadmin = preg_match('@/admin/[^/]\.php$@i', $_SERVER['SCRIPT_FILENAME']);
+    if (!$isadmin) {
       return null;
     }
     return parent::userID();
