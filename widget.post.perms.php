@@ -118,7 +118,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     $str = '<p class="error">'
          . 'Vous n\'avez pas les droits suffisants pour lire ce billet<br />';
     if (!$core->auth->userID()) {
-      $str .= 'Vous devez vous <a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['REQUEST_URI'] .'">authentifier</a>';
+      $str .= 'Vous devez vous <a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['PATH_INFO'] .'">authentifier</a>';
     } else {
       $str .= 'Tu dois être membre du groupe pour lire ce message';
     }

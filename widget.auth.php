@@ -14,7 +14,7 @@ class xorgAuthWidget {
       }
       return $str . '<a href="' . $core->blog->url . 'auth/exit">Déconnexion</a></p>';
     } else {
-      return '<p><a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['REQUEST_URI'] . '">M\'authentifier via Polytechnique.org</a></p>';
+      return '<p><a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['PATH_INFO'] . '">M\'authentifier via Polytechnique.org</a></p>';
     }
   }
 }

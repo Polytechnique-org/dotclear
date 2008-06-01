@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('DC_BLOG_ID')) {
+  define('DC_BLOG_ID', $_SERVER['DC_BLOG_ID']);
+}
+
 class xorgAuth extends dcAuth {
   public $xorg_infos = array('forlife' => null,
                              'prenom' => null,
@@ -103,9 +107,6 @@ class xorgAuth extends dcAuth {
   /** Xorg SSO API */
 
   public function callXorg($path = null) {
-    if (is_null($path)) {
-      $path = $_SERVER['REQUEST_URI'];
-    }
     $this->buildFromSession();
     if (@$_SESSION['auth-xorg']) {
       return true;
@@ -113,6 +114,9 @@ class xorgAuth extends dcAuth {
     global $core;
     if (!session_id()) {
       $core->session->start();
+    }
+    if (is_null($path)) {
+      $path = @$_SERVER['PATH_INFO'];
     }
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
     $_SESSION['xorg-group'] = $core->blog->settings->get('xorg_blog_owner');
@@ -155,7 +159,7 @@ class xorgAuth extends dcAuth {
       $_SESSION['sess_blog_id'] = 'default';
       $this->sudo(array($this, 'createUser'));
       $path = $_GET['path'];
-      header("Location: http://murphy.m4x.org" . $_GET['path']);
+      header('Location: ' . $core->blog->url . $_GET['path']);
       exit;
     }
     unset($_SESSION['auth-xorg']);
@@ -241,9 +245,18 @@ class xorgAuth extends dcAuth {
 
   public function authForm() {
     global $core;
-    $path = "http://murphy.m4x.org/~x2003bruneau/dotclear/";
+    if (!isset($core->blog)) {
+      $blog = @$core->getBlog(DC_BLOG_ID);
+    } else {
+      $blog = $core->blog;
+    }
+    $path = @$blog->url;
+    if (!$path) {
+      $path = $blog->f('blog_url');
+    }
+
     return '<fieldset>'.
-      '<p><a href="' . $path . 'auth/Xorg?path=/~x2003bruneau/dotclear/admin/index.php">Via Polytechnique.org</a></p>' .
+      '<p><a href="' . $path . 'auth/Xorg?path=/admin/index.php">Via Polytechnique.org</a></p>' .
       '</fieldset>'.
       '<p>'.__('You must accept cookies in order to use the private area.').'</p>';
   }
