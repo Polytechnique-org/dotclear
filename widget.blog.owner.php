@@ -59,12 +59,18 @@ class xorgBlogOwnerWidget {
   }
 
   public static function behavior_adminBeforeBlogSettingsUpdate(&$settings) {
+    self::setXorgOwner($settings, $_POST['xorg_blog_type'], $_POST['xorg_blog_owner']);
+  }
+
+  public static function setXorgOwner(&$settings, $type, $owner) {
     global $core;
     if ($core->auth->isSuperAdmin()) {
-      $settings->put('xorg_blog_type', $_POST['xorg_blog_type'], 'string', 'Type de blog X.org');
-      $settings->put('xorg_blog_owner', $_POST['xorg_blog_owner'], 'string', 'Propriétaire X.org du blog');
+      $settings->setNamespace('xorgauth');
+      $settings->put('xorg_blog_type', $type, 'string', 'Type de blog X.org');
+      $settings->put('xorg_blog_owner', $owner, 'string', 'Propriétaire X.org du blog');
     }
   }
+
 }
 
 ?>
