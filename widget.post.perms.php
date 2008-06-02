@@ -151,7 +151,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
 
   public static function getExcerpt(&$rs, $absolute_urls = false) {
     if (self::canRead($rs)) {
-      return parent::getContent(&$rs, $absolute_urls);
+      return parent::getExcerpt(&$rs, $absolute_urls);
     } else if (self::isExtended($rs)) {
       return self::showMessage($rs);
     } else {
