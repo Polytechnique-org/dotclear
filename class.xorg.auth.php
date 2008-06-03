@@ -57,6 +57,8 @@ class xorgAuth extends dcAuth {
       $defaults = $core->userDefaults();
       $defaults['post_xorg_perms'] = 'public';
       $cur->user_options = $defaults;
+      $cur->user_lang = 'fr';
+      $cur->user_tz = 'Europe/Paris';
       $cur->user_default_blog = $_SERVER['DC_BLOG_ID'];
       $core->addUser($cur);
     }
