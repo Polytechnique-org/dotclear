@@ -8,7 +8,7 @@ class xorgAuthWidget {
     global $core;
     $name = @$core->auth->getInfo('user_displayname');
     if ($name) {
-      $str = '<div><ul><li>Tu es ' . $core->auth->getInfo('user_displayname') . '</li>';
+      $str = '<div><ul><li><strong>Tu es ' . $core->auth->getInfo('user_displayname') . '</strong></li>';
       if ($core->auth->check('usage,contentadmin,admin', $core->blog->id)) {
         $str .= '<li><a href="' . $core->blog->url . 'admin/index.php">Interface de rédaction</a></li>';
       }
