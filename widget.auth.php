@@ -8,13 +8,13 @@ class xorgAuthWidget {
     global $core;
     $name = @$core->auth->getInfo('user_displayname');
     if ($name) {
-      $str = '<p>Tu es ' . $core->auth->getInfo('user_displayname') . '<br />';
+      $str = '<div><ul><li>Tu es ' . $core->auth->getInfo('user_displayname') . '</li>';
       if ($core->auth->check('usage,contentadmin,admin', $core->blog->id)) {
-        $str .= '<a href="' . $core->blog->url . 'admin/index.php">Interface de rédaction</a><br />';
+        $str .= '<li><a href="' . $core->blog->url . 'admin/index.php">Interface de rédaction</a></li>';
       }
-      return $str . '<a href="' . $core->blog->url . 'auth/exit">Déconnexion</a></p>';
+      return $str . '<li><a href="' . $core->blog->url . 'auth/exit">Déconnexion</a></li></ul></div>';
     } else {
-      return '<p><a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['PATH_INFO'] . '">M\'authentifier via Polytechnique.org</a></p>';
+      return '<ul><li><a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['PATH_INFO'] . '">M\'authentifier via Polytechnique.org</a></li></ul>';
     }
   }
 }
