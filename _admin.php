@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/widget.auth.php';
+require_once dirname(__FILE__) . '/widget.copyright.php';
 require_once dirname(__FILE__) . '/widget.post.perms.php';
 require_once dirname(__FILE__) . '/widget.blog.owner.php';
 
@@ -9,6 +10,7 @@ $core->addBehavior('coreBlogConstruct', array('xorgAuth', 'behavior_coreBlogCons
 
 /* Declare the authentication widget on public page */
 $core->addBehavior('initWidgets', array('xorgAuthWidget', 'behavior_initWidgets'));
+$core->addBehavior('initWidgets', array('xorgCopyrightWidget', 'behavior_initWidgets'));
 
 
 /* Declare stuff to set permissions on each post */

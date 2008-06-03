@@ -2,6 +2,7 @@
 
 require_once dirname(__FILE__) . '/page.auth.php';
 require_once dirname(__FILE__) . '/widget.auth.php';
+require_once dirname(__FILE__) . '/widget.copyright.php';
 require_once dirname(__FILE__) . '/widget.post.perms.php';
 require_once dirname(__FILE__) . '/class.xorg.auth.php';
 require_once dirname(__FILE__) . '/page.webservice.php';
