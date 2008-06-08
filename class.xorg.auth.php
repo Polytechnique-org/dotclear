@@ -39,6 +39,15 @@ class xorgAuth extends dcAuth {
       $this->user_admin = ($_SESSION['auth-xorg-perms'] == 'admin');
       parent::checkUser($this->user_id);
       $core->getUserBlogs();
+      $this->setCommentCookie();
+    }
+  }
+
+  private function setCommentCookie() {
+    if (!isset($_COOKIE['comment_info_xorg']) || $_COOKIE['comment_info_xorg'] != $this->user_id) {
+      $cookie = $this->getInfo('user_displayname') . "\n" . $this->getInfo('user_email') . "\n" . $this->getInfo('user_url');
+      setcookie('comment_info_xorg', $this->user_id, time() + 30 * 86400, '/');
+      setrawcookie('comment_info', rawurlencode($cookie), time() + 30 * 86400, '/');
     }
   }
 
