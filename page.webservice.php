@@ -47,7 +47,7 @@ class XorgWebservice extends dcUrlHandlers {
                    'message' => 'Missing parameters');
     }
     $owner = $_GET['owner'];
-    $url   = $_GET['url'];
+    $url   = rtrim($_GET['url'], '/') . '/';
     $type  = $_GET['type'];
     if ($type != 'user' && $type != 'group-member' && $type != 'group-admin') {
       return array('status' => false,
@@ -69,6 +69,10 @@ class XorgWebservice extends dcUrlHandlers {
 
     $settings = new dcSettings($core, $owner);
     xorgBlogOwnerWidget::setXorgOwner($settings, $type, $owner);
+
+    $settings = new dcSettings($core, $owner);
+    $settings->setNamespace('system');
+    $settings->put('public_path', 'public/' . $owner);
 
     return array('status' => true,
                  'message' => 'blog created');
