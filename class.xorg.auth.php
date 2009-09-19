@@ -224,10 +224,10 @@ class xorgAuth extends dcAuth {
 
   public function userID() {
     $this->buildFromSession();
-    $isadmin = preg_match('@/admin/[^/]+\.php$@i', $_SERVER['SCRIPT_FILENAME']);
-    if (!$isadmin) {
-      return null;
-    }
+//    $isadmin = preg_match('@/admin/[^/]+\.php$@i', $_SERVER['SCRIPT_FILENAME']);
+//    if (!$isadmin) {
+//      return null;
+//    }
     return parent::userID();
   }
 
@@ -240,7 +240,7 @@ class xorgAuth extends dcAuth {
     $this->buildFromSession();
     if ($n == 'xorg_group_member') {
       global $core;
-      if ($core->blog->settings('xorg_blog_owner') != $_SESSION['xorg-group']) {
+      if ($core->blog->settings->get('xorg_blog_owner') != $_SESSION['xorg-group']) {
         return false;
       }
       $perm = $this->xorg_infos['grpauth'];

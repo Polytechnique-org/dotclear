@@ -9,7 +9,7 @@ class xorgAuthentifier extends dcUrlHandlers {
       break;
      case 'Xorg':
       if ($core->auth->callXorg($_GET['path'])) {
-        header('Location: http://murphy.m4x.org' . $_GET['path']);
+        header('Location: ' . $core->blog->url . $_GET['path']);
         exit;
       }
       break;
