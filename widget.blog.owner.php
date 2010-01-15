@@ -14,7 +14,7 @@ class xorgBlogOwnerWidget {
                                       'selected' => false),
                      'group-admin' => array('text' => 'Blog de groupe, édition par les administrateurs',
                                             'selected' => false));
-      $type = $settings->get('xorg_blog_type');
+      $type = $settings->xorgauth->get('xorg_blog_type');
       if (!$type) {
         $type = 'user';
       }
@@ -42,7 +42,7 @@ class xorgBlogOwnerWidget {
             <p>
               <label>
                 Propriétaire du blog (*)&nbsp;:
-                <input type="text" name="xorg_blog_owner" value="<?php echo $settings->get('xorg_blog_owner'); ?> " />
+                <input type="text" name="xorg_blog_owner" value="<?php echo $settings->xorgauth->get('xorg_blog_owner'); ?> " />
               </label>
             </p>
             <p>
@@ -65,9 +65,8 @@ class xorgBlogOwnerWidget {
   public static function setXorgOwner(&$settings, $type, $owner) {
     global $core;
     if ($core->auth->isSuperAdmin()) {
-      $settings->setNamespace('xorgauth');
-      $settings->put('xorg_blog_type', $type, 'string', 'Type de blog X.org');
-      $settings->put('xorg_blog_owner', $owner, 'string', 'Propriétaire X.org du blog');
+      $settings->xorgauth->put('xorg_blog_type', $type, 'string', 'Type de blog X.org');
+      $settings->xorgauth->put('xorg_blog_owner', $owner, 'string', 'Propriétaire X.org du blog');
     }
   }
 

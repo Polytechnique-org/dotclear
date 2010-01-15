@@ -38,7 +38,7 @@ class xorgAuth extends dcAuth {
       $this->user_id = $user;
       $this->user_admin = ($_SESSION['auth-xorg-perms'] == 'admin');
       parent::checkUser($this->user_id);
-      $core->getUserBlogs();
+//      $core->getUserBlogs();
       $this->setCommentCookie();
     }
   }
@@ -80,8 +80,8 @@ class xorgAuth extends dcAuth {
     if (!isset($_SESSION['auth-xorg'])) {
       return;
     }
-    $type = $blog->settings->get('xorg_blog_type');
-    $owner = $blog->settings->get('xorg_blog_owner');
+    $type = $blog->settings->xorgauth->get('xorg_blog_type');
+    $owner = $blog->settings->xorgauth->get('xorg_blog_owner');
     $level = $this->xorg_infos['grpauth'];
     $rec = $core->getUser($this->user_id);
     $wasAdmin = $rec->f('user_super');
@@ -131,14 +131,14 @@ class xorgAuth extends dcAuth {
       $path = @$_SERVER['PATH_INFO'];
     }
     $_SESSION["auth-x-challenge"] = md5(uniqid(rand(), 1));
-    $_SESSION['xorg-group'] = $core->blog->settings->get('xorg_blog_owner');
+    $_SESSION['xorg-group'] = $core->blog->settings->xorgauth->get('xorg_blog_owner');
     $url = "https://www.polytechnique.org/auth-groupex/utf8";
     $url .= "?session=" . session_id();
     $url .= "&challenge=" . $_SESSION["auth-x-challenge"];
     $url .= "&pass=" . md5($_SESSION["auth-x-challenge"] . XORG_AUTH_KEY);
-    $type = $core->blog->settings->get('xorg_blog_type');
+    $type = $core->blog->settings->xorgauth->get('xorg_blog_type');
     if ($type == 'group-member' || $type == 'group-admin') {
-      $url .= '&group=' . $core->blog->settings->get('xorg_blog_owner');
+      $url .= '&group=' . $core->blog->settings->xorgauth->get('xorg_blog_owner');
     }
     $url .= "&url=" . urlencode($core->blog->url . "auth/XorgReturn?path=" . $path);
     session_write_close();
@@ -231,16 +231,16 @@ class xorgAuth extends dcAuth {
     return parent::userID();
   }
 
-  public function getPermissions() {
+  public function getPermissions($blog_id) {
     $this->buildFromSession();
-    return parent::getPermissions();
+    return parent::getPermissions($blog_id);
   }
 
   public function getInfo($n) {
     $this->buildFromSession();
     if ($n == 'xorg_group_member') {
       global $core;
-      if ($core->blog->settings->get('xorg_blog_owner') != $_SESSION['xorg-group']) {
+      if ($core->blog->settings->xorgauth->get('xorg_blog_owner') != $_SESSION['xorg-group']) {
         return false;
       }
       $perm = $this->xorg_infos['grpauth'];

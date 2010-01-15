@@ -71,8 +71,7 @@ class XorgWebservice extends dcUrlHandlers {
     xorgBlogOwnerWidget::setXorgOwner($settings, $type, $owner);
 
     $settings = new dcSettings($core, $owner);
-    $settings->setNamespace('system');
-    $settings->put('public_path', 'public/' . $owner);
+    $settings->system->put('public_path', 'public/' . $owner);
 
     return array('status' => true,
                  'message' => 'blog created');

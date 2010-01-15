@@ -8,7 +8,7 @@ class xorgPostPermsWidget {
                                        'selected' => false));
     $pos = 'public';
     global $core;
-    $type = $core->blog->settings->get('xorg_blog_type');
+    $type = $core->blog->settings->xorgauth->get('xorg_blog_type');
     if ($type == 'group-admin' || $type == 'group-member') {
       $choices['group'] = array('text' => 'Visible par les membres du groupe',
                                 'selected' => false);
@@ -139,7 +139,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     return $str . '</p>';
   }
 
-  public static function getContent(&$rs, $absolute_urls = false) {
+  public static function getContent($rs, $absolute_urls = false) {
     if (self::canRead($rs)) {
       return parent::getContent(&$rs, $absolute_urls);
     } else if (!self::isExtended($rs)) {
@@ -149,7 +149,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     }
   }
 
-  public static function getExcerpt(&$rs, $absolute_urls = false) {
+  public static function getExcerpt($rs, $absolute_urls = false) {
     if (self::canRead($rs)) {
       return parent::getExcerpt(&$rs, $absolute_urls);
     } else if (self::isExtended($rs)) {
@@ -159,15 +159,15 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     }
   }
 
-  public static function commentsActive(&$rs) {
+  public static function commentsActive($rs) {
     return self::canRead($rs) && parent::commentsActive($rs);
   }
 
-  public static function trackbacksActive(&$rs) {
+  public static function trackbacksActive($rs) {
     return self::canRead($rs) && parent::trackbacksActive($rs);
   }
 
-  public static function hasComments(&$rs) {
+  public static function hasComments($rs) {
     return self::canRead($rs) && parent::hasComments($rs);
   }
 }

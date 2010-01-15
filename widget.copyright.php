@@ -6,8 +6,8 @@ class xorgCopyrightWidget {
 
   static public function widget(&$w) {
     global $core;
-    $copyright = $core->blog->settings->get('copyright_notice');
-    $editor    = $core->blog->settings->get('editor');
+    $copyright = $core->blog->settings->system->get('copyright_notice');
+    $editor    = $core->blog->settings->system->get('editor');
 
     $text = '<div><h2>Mentions légales</h2><ul>';
     if ($editor) {
