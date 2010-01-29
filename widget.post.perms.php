@@ -118,7 +118,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
       return true;
     } elseif ($metas['post_xorg_perms'] == 'public') {
       return true;
-    } elseif ($metas['post_xorg_perms'] == 'auth' && $core->auth->userID()) {
+    } elseif ($metas['post_xorg_perms'] == 'auth' && $core->auth->checkPassword()) {
       return true;
     } elseif ($metas['post_xorg_perms'] == 'group' && $core->auth->getInfo('xorg_group_member')) {
       return true;
@@ -130,8 +130,8 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     $metas = unserialize($rs->field('post_meta'));
     global $core;
     $str = '<p class="error">'
-         . 'Vous n\'avez pas les droits suffisants pour lire ce billet<br />';
-    if (!$core->auth->userID()) {
+         . 'Vous n\'avez pas les droits suffisants pour lire ce billet&nbsp;:<br />';
+    if (!$core->auth->checkPassword()) {
       $str .= 'Vous devez vous <a href="' . $core->blog->url . 'auth/Xorg?path=' . $_SERVER['PATH_INFO'] .'">authentifier</a>';
     } else {
       $str .= 'Tu dois être membre du groupe pour lire ce message';
