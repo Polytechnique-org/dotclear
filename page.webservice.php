@@ -72,6 +72,7 @@ class XorgWebservice extends dcUrlHandlers {
 
     $settings = new dcSettings($core, $owner);
     $settings->system->put('public_path', 'public/' . $owner);
+    $settings->system->put('public_url', '/public/' . $owner);
 
     return array('status' => true,
                  'message' => 'blog created');
