@@ -68,11 +68,11 @@ class XorgWebservice extends dcUrlHandlers {
     $core->addBlog($cur);
 
     $settings = new dcSettings($core, $owner);
-    xorgBlogOwnerWidget::setXorgOwner($settings, $type, $owner);
-
-    $settings = new dcSettings($core, $owner);
     $settings->system->put('public_path', 'public/' . $owner);
     $settings->system->put('public_url', '/public/' . $owner);
+    $xorgauth = $settings->addNamespace('xorgauth');
+    $xorgauth->put('xorg_blog_type', $type, 'string', 'Type de blog X.org');
+    $xorgauth->put('xorg_blog_owner', $owner, 'string', 'Propriétaire X.org du blog');
 
     return array('status' => true,
                  'message' => 'blog created');
