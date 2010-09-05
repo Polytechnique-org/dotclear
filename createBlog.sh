@@ -9,11 +9,11 @@
 # owner = name of the owner
 #     * user blog: forlife of the owner of the blog
 #     * group blog: 'diminutif' of the group (from X.net database)
-# baseurl = base url of the blog.
+# url = full url of the blog (e.g http://group.blog-x.org/).
 
 # WARNING: The script generates a .htaccess. The rewrite base might be edited to match
 #         the installation. Default value is based on a blog-farm of the form
-#         http://base.url/$owner/
+#         http://$owner.base.url/
 
 # Once the blog has been installed and the .htaccess set-up, you can go on the administration
 # page of the blog at baseurl/admin/
@@ -50,7 +50,7 @@ ln -s $rootpath/$templatepath/public/$owner public
 
 ( cat <<EOF
 RewriteEngine On
-RewriteBase $baseurl/$owner
+RewriteBase $baseurl
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule (.*) index.php/\$1
