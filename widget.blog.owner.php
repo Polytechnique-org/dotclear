@@ -1,7 +1,7 @@
 <?php
 
 class xorgBlogOwnerWidget {
-  public static function behavior_adminBlogPreferencesForm(&$core) {
+  public static function behavior_adminBlogPreferencesForm($core) {
     if ($core->auth->isSuperAdmin()) {
       if (isset($_GET['id'])) {
         $settings = new dcSettings($core, $_GET['id']);
@@ -58,11 +58,11 @@ class xorgBlogOwnerWidget {
     }
   }
 
-  public static function behavior_adminBeforeBlogSettingsUpdate(&$settings) {
+  public static function behavior_adminBeforeBlogSettingsUpdate($settings) {
     self::setXorgOwner($settings, $_POST['xorg_blog_type'], $_POST['xorg_blog_owner']);
   }
 
-  public static function setXorgOwner(&$settings, $type, $owner) {
+  public static function setXorgOwner($settings, $type, $owner) {
     global $core;
     if ($core->auth->isSuperAdmin()) {
       $settings->xorgauth->put('xorg_blog_type', $type, 'string', 'Type de blog X.org');

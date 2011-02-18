@@ -10,12 +10,12 @@ class xorgAuth extends dcAuth {
                              'nom' => null,
                              'grpauth' => null,
                              'perms' => null);
-  static public function behavior_coreBlogConstruct(&$blog) {
+  static public function behavior_coreBlogConstruct($blog) {
     global $core;
     $core->auth->sudo(array($core->auth, 'updateUserPerms'), $blog);
   }
 
-  public function __construct(&$core) {
+  public function __construct($core) {
     parent::__construct($core);
     $core->addBehavior('coreBlogConstruct', array('xorgAuth', 'behavior_coreBlogConstruct'));
   }
@@ -74,7 +74,7 @@ class xorgAuth extends dcAuth {
     }
   }
 
-  public function updateUserPerms(&$blog) {
+  public function updateUserPerms($blog) {
     global $core;
     $this->buildFromSession();
     if (!isset($_SESSION['auth-xorg'])) {

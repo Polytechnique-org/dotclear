@@ -1,10 +1,10 @@
 <?php
 class xorgAuthWidget {
-  public static function behavior_initWidgets(&$w) {
+  public static function behavior_initWidgets($w) {
     $w->create('XorgAuth', __('Auth. X.org'), array('xorgAuthWidget', 'widget'));
   }
 
-  static public function widget(&$w) {
+  static public function widget($w) {
     global $core;
     $name = @$core->auth->getInfo('user_displayname');
     if ($name) {

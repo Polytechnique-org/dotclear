@@ -42,7 +42,7 @@ class xorgPostPermsWidget {
     <?php
   }
 
-  private static function setPermsMeta(&$cur) {
+  private static function setPermsMeta($cur) {
     $meta = $cur->getField('post_meta');
     if (is_string($meta)) {
       $meta = unserialize($meta);
@@ -54,11 +54,11 @@ class xorgPostPermsWidget {
     $cur->setField('post_meta', serialize($meta));
   }
 
-  public static function behavior_adminBeforePostCreate(&$cur) {
+  public static function behavior_adminBeforePostCreate($cur) {
     self::setPermsMeta($cur);
   }
 
-  public static function behavior_adminBeforePostUpdate(&$cur, $post_id) {
+  public static function behavior_adminBeforePostUpdate($cur, $post_id) {
     self::setPermsMeta($cur);
   }
 
@@ -93,17 +93,17 @@ class xorgPostPermsWidget {
     <?php
   }
 
-  public static function behavior_adminBeforeUserUpdate(&$cur, $user_id) {
+  public static function behavior_adminBeforeUserUpdate($cur, $user_id) {
     $opts = $cur->getField('user_options');
     $opts['post_xorg_perms'] = $_POST['post_xorg_perms'];
     $cur->setField('user_options', $opts);
   }
 
-  public static function behavior_coreBlogGetPosts(&$rs) {
+  public static function behavior_coreBlogGetPosts($rs) {
     $rs->extend('xorgPostPermsFilter');
   }
 
-/*  public static function behavior_coreBlogGetComments(&$rs) {
+/*  public static function behavior_coreBlogGetComments($rs) {
     $rs->extends('xorgCommentPermsFilter');
   }*/
 }
@@ -111,7 +111,7 @@ class xorgPostPermsWidget {
 if (class_exists('rsExtPostPublic')) {
 
 class xorgPostPermsFilter extends rsExtPostPublic {
-  private static function canRead(&$rs) {
+  private static function canRead($rs) {
     $metas = unserialize($rs->field('post_meta'));
     global $core;
     if (!isset($metas['post_xorg_perms'])) {
@@ -126,7 +126,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
     return false;
   }
 
-  private static function showMessage(&$rs) {
+  private static function showMessage($rs) {
     $metas = unserialize($rs->field('post_meta'));
     global $core;
     $str = '<p class="error">'
@@ -141,7 +141,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
 
   public static function getContent($rs, $absolute_urls = false) {
     if (self::canRead($rs)) {
-      return parent::getContent(&$rs, $absolute_urls);
+      return parent::getContent($rs, $absolute_urls);
     } else if (!self::isExtended($rs)) {
       return self::showMessage($rs);
     } else {
@@ -151,7 +151,7 @@ class xorgPostPermsFilter extends rsExtPostPublic {
 
   public static function getExcerpt($rs, $absolute_urls = false) {
     if (self::canRead($rs)) {
-      return parent::getExcerpt(&$rs, $absolute_urls);
+      return parent::getExcerpt($rs, $absolute_urls);
     } else if (self::isExtended($rs)) {
       return self::showMessage($rs);
     } else {

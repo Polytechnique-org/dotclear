@@ -1,10 +1,10 @@
 <?php
 class xorgCopyrightWidget {
-  public static function behavior_initWidgets(&$w) {
+  public static function behavior_initWidgets($w) {
     $w->create('XorgCopyright', __('Copyright'), array('xorgCopyrightWidget', 'widget'));
   }
 
-  static public function widget(&$w) {
+  static public function widget($w) {
     global $core;
     $copyright = $core->blog->settings->system->get('copyright_notice');
     $editor    = $core->blog->settings->system->get('editor');
