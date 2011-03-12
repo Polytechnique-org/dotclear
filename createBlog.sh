@@ -2,8 +2,9 @@
 
 # Usage:
 # ./createBlog.sh type owner baseurl
-# type = user | group-member | group-admin
+# type = user | connected | group-member | group-admin
 #     * user: this is a blog for a user
+#     * connected: this is a blog for a group, all connected users can post
 #     * group-member: this is a blog for a group, all the members of the group can post
 #     * group-admin: this is a blog for a group, only group admins can post
 # owner = name of the owner

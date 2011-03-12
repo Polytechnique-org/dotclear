@@ -10,6 +10,8 @@ class xorgBlogOwnerWidget {
       }
       $types = array('user' => array('text' => 'Blog d\'utilisateur',
                                      'selected' => false),
+                     'connected' => array('text' => 'Blog de groupe, édition par toute personne connectée',
+                                      'selected' => false),
                      'group-member' => array('text' => 'Blog de groupe, édition par les membres',
                                       'selected' => false),
                      'group-admin' => array('text' => 'Blog de groupe, édition par les administrateurs',

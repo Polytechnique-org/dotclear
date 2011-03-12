@@ -49,7 +49,7 @@ class XorgWebservice extends dcUrlHandlers {
     $owner = $_GET['owner'];
     $url   = rtrim($_GET['url'], '/') . '/';
     $type  = $_GET['type'];
-    if ($type != 'user' && $type != 'group-member' && $type != 'group-admin') {
+    if ($type != 'user' && $type != 'connected' && $type != 'group-member' && $type != 'group-admin') {
       return array('status' => false,
                    'message' => 'Invalid blog type required');
     }

@@ -101,6 +101,8 @@ class xorgAuth extends dcAuth {
                      'admin' => true);
     } else if ($type == 'group-member' && $level == 'membre') {
       $perms = array('usage' => true);
+    } else if ($type == 'connected' && $this->xorg_infos['forlife'] != '') {
+      $perms = array('usage' => true);
     } else if ($type == 'user' && $owner == $this->xorg_infos['forlife']) {
       $perms = array('usage' => true,
                      'contentadmin' => true,
