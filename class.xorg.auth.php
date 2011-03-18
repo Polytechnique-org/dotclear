@@ -95,7 +95,7 @@ class xorgAuth extends dcAuth {
       $this->killSession();
       return;
     }
-    if (($type == 'group-admin' || $type == 'group-member') && $level == 'admin') {
+    if (($type == 'group-admin' || $type == 'group-member' || $type == 'connected') && $level == 'admin') {
       $perms = array('usage' => true,
                      'contentadmin' => true,
                      'admin' => true);
@@ -139,7 +139,7 @@ class xorgAuth extends dcAuth {
     $url .= "&challenge=" . $_SESSION["auth-x-challenge"];
     $url .= "&pass=" . md5($_SESSION["auth-x-challenge"] . XORG_AUTH_KEY);
     $type = $core->blog->settings->xorgauth->get('xorg_blog_type');
-    if ($type == 'group-member' || $type == 'group-admin') {
+    if ($type == 'group-member' || $type == 'group-admin' || $type == 'connected') {
       $url .= '&group=' . $core->blog->settings->xorgauth->get('xorg_blog_owner');
     }
     $url .= "&url=" . urlencode($core->blog->url . "auth/XorgReturn?path=" . $path);
