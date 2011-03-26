@@ -10,6 +10,10 @@ require_once dirname(__FILE__) . '/page.webservice.php';
 /* Xorg auth */
 $core->url->register('xorgAuth', 'XorgAuth', '^auth/(.*)$', array('xorgAuthentifier', 'doAuth'));
 
+/* Declare the authentication widget on public page */
+$core->addBehavior('initWidgets', array('xorgAuthWidget', 'behavior_initWidgets'));
+$core->addBehavior('initWidgets', array('xorgCopyrightWidget', 'behavior_initWidgets'));
+
 /* Post permission handling */
 $core->addBehavior('coreBlogGetPosts', array('xorgPostPermsWidget', 'behavior_coreBlogGetPosts'));
 
