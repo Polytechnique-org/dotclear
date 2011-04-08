@@ -115,11 +115,13 @@ templatepath=dotclear
 
 serviceurl="http://blog.polytechnique.org/xorgservice/createBlog"
 
-( wget "$serviceurl?owner=$OWNER&type=$TYPE&url=$URL&baseurl=${BASEURL}" -O - 2> /dev/null | grep 'blog created' ) || die "Blog creation failed"
+CALLED="$serviceurl?owner=${OWNER}&type=${TYPE}&url=${URL}&baseurl=${BASEURL}"
+echo "Calling $CALLED"
+( wget "$CALLED" -O - 2> /dev/null | grep 'blog created' ) || die "Blog creation failed"
 
-( cd $rootpath && mkdir $OWNER ) || die "Can't create the repository for the blog ($rootpath/$OWNER)"
+( cd $rootpath && mkdir -p $OWNER ) || die "Can't create the repository for the blog ($rootpath/$OWNER)"
 
-cd $OWNER
+cd $rootpath/$OWNER
 for i in admin db inc index.php locales plugins themes; do
   ln -s $rootpath/$templatepath/$i || die "Can't add path to $i"
 done
