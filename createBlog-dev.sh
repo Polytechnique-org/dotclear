@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage:
-# ./createBlog.sh type owner baseurl
+# ./createBlog.sh type owner
 # type = user | connected | group-member | group-admin
 #     * user: this is a blog for a user
 #     * connected: this is a blog for a group, all connected users can post
@@ -22,16 +22,19 @@
 # Their, go to the section 'Widget' and add (by drag-n-drop) the widgets 'Auth X.org' and 'Copyright'.
 # (should be set up by default in near future).
 
+# The blog will be created at :
+# ~/dev/blogs/$owner
+# It will be available at
+# http://dev.blog-x.org/~$USER/$owner
 
 # HELPERS
 
 usage() {
-  echo "Usage: $0 -t TYPE -o OWNER -u URL
+  echo "Usage: $0 -t TYPE -o OWNER
 
   where :
     TYPE = user | connected | group-member | group-admin is the type of the blog
     OWNER if the owner of the blog (user hruid or group diminutif)
-    URL is the URL of the blog
   "
     exit $1;
 }
@@ -44,7 +47,7 @@ die() {
 
 # GETOPT
 
-TEMP=`getopt -n $0 -o ht:o:u: -- "$@"`
+TEMP=`getopt -n $0 -o ht:o: -- "$@"`
 
 RET=$?
 
@@ -56,7 +59,6 @@ eval set -- "$TEMP"
 
 TYPE=""
 OWNER=""
-URL=""
 VHOST=0
 
 while true ; do
@@ -76,14 +78,6 @@ while true ; do
       OWNER=$2;
       shift 2;
       ;;
-    -u)
-      URL=$2;
-      if ! echo "${URL}" | grep -E "^http://[^/]+/"  > /dev/null; then
-        echo -e "ERROR: URL must be a full URL, e.g 'http://www.example.org/'\n";
-        usage 1
-      fi
-      shift 2;
-      ;;
     --)
       shift;
       break;
@@ -95,11 +89,12 @@ while true ; do
   esac
 done
 
-if [[ "x${TYPE}" == "x" || "x${OWNER}" == "x" || "x${URL}" == "x" ]]; then
-  echo -e "ERROR: Missing one of -t, -o or -u options.\n"
+if [[ "x${TYPE}" == "x" || "x${OWNER}" == "x" ]]; then
+  echo -e "ERROR: Missing one of -t or -o options.\n"
   usage 1
 fi
 
+URL="http://dev.blog-x.org/~${USER}/${OWNER}/"
 BASEURL=`echo "${URL}" | sed -r 's,http://[^/]+/,/,'`
 
 echo "Creating blog with :
@@ -110,10 +105,10 @@ echo "Creating blog with :
 "
 
 apache_group=www-data
-rootpath=/home/web/blogs
+rootpath=${HOME}/dev/blogs/
 templatepath=dotclear
 
-serviceurl="http://blog.polytechnique.org/xorgservice/createBlog"
+serviceurl="http://dev.blog-x.org/dotclear/xorgservice/createBlog"
 
 ( wget "$serviceurl?owner=$OWNER&type=$TYPE&url=$URL&baseurl=${BASEURL}" -O - 2> /dev/null | grep 'blog created' ) || die "Blog creation failed"
 
