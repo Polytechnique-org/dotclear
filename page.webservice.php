@@ -42,12 +42,13 @@ class XorgWebservice extends dcUrlHandlers {
 
   static public function createBlog() {
     global $core;
-    if (!isset($_GET['owner']) || !isset($_GET['url']) || !isset($_GET['type'])) {
+    if (!isset($_GET['owner']) || !isset($_GET['url']) || !isset($_GET['type']) || !isset($_GET['baseurl'])) {
       return array('status' => false,
                    'message' => 'Missing parameters');
     }
     $owner = $_GET['owner'];
     $url   = rtrim($_GET['url'], '/') . '/';
+    $baseurl = rtrim($_GET['baseurl'], '/') . '/';
     $type  = $_GET['type'];
     if ($type != 'user' && $type != 'connected' && $type != 'group-member' && $type != 'group-admin') {
       return array('status' => false,
@@ -69,7 +70,9 @@ class XorgWebservice extends dcUrlHandlers {
 
     $settings = new dcSettings($core, $owner);
     $settings->system->put('public_path', 'public/' . $owner);
-    $settings->system->put('public_url', '/public/' . $owner);
+    $settings->system->put('public_url', $baseurl . 'public/');
+    $settings->system->put('themes_path', 'themes/');
+    $settings->system->put('themes_url', $baseurl . 'themes/');
     $xorgauth = $settings->addNamespace('xorgauth');
     $xorgauth->put('xorg_blog_type', $type, 'string', 'Type de blog X.org');
     $xorgauth->put('xorg_blog_owner', $owner, 'string', 'Propriétaire X.org du blog');
