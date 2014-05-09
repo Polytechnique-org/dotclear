@@ -78,7 +78,7 @@ while true ; do
       ;;
     -u)
       URL=$2;
-      if ! echo "${URL}" | grep -E "^http://[^/]+/"  > /dev/null; then
+      if ! echo "${URL}" | grep -E "^https?://[^/]+/"  > /dev/null; then
         echo -e "ERROR: URL must be a full URL, e.g 'http://www.example.org/'\n";
         usage 1
       fi
@@ -100,7 +100,7 @@ if [[ "x${TYPE}" == "x" || "x${OWNER}" == "x" || "x${URL}" == "x" ]]; then
   usage 1
 fi
 
-BASEURL=`echo "${URL}" | sed -r 's,http://[^/]+/,/,'`
+BASEURL=`echo "${URL}" | sed -r 's,https?://[^/]+/,/,'`
 
 echo "Creating blog with :
   TYPE = ${TYPE}
